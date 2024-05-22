@@ -15,3 +15,15 @@ __pycache__
 support
 src/debug.txt
 cache
+/.vs
+/venv
+src/7z.exe
+src/7z.dll
+src/7z_History.txt
+src/7z_License.txt
+src/7z_readme.txt
+src/data/audio_tools/BmlFuzDecode.exe
+src/data/audio_tools/BmlFuzEncode.exe
+src/data/audio_tools/BSArch.exe
+src/data/audio_tools/xWMAEncode.exe
+/src/translation_audio/extracted_files

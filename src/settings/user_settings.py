@@ -84,6 +84,12 @@ class UserSettings(qtw.QWidget):
         api_key_hlayout.addWidget(api_setup_button)
         flayout.addRow(self.mloc.nm_api_key, api_key_hlayout)
 
+        # xTTS API server address
+        self.xtts_api_entry = qtw.QLineEdit()
+        self.xtts_api_entry.setText(self.app.user_config.get("xtts_api",""))
+        self.xtts_api_entry.textChanged.connect(self.on_change)
+        flayout.addRow("xTTS API server address", self.xtts_api_entry)
+
         # Mod Manager selection
         self.mod_manager_dropdown = qtw.QComboBox()
         self.mod_manager_dropdown.setEditable(False)
@@ -283,4 +289,5 @@ class UserSettings(qtw.QWidget):
             "use_masterlist": self.masterlist_box.isChecked(),
             "instance_profile": profile,
             "provider_preference": self.source_dropdown.currentText(),
+            "xtts_api": self.xtts_api_entry.text(),  #xTTS api server new setting
         }

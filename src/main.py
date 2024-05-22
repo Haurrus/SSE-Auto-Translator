@@ -100,7 +100,7 @@ class MainApp(qtw.QApplication):
         self.setApplicationVersion(self.version)
 
         self.setWindowIcon(qtg.QIcon(str(self.data_path / "icons" / "icon.png")))
-
+        
     def exec(self):
         self.init_logger()
         self.load_config()
@@ -156,6 +156,16 @@ class MainApp(qtw.QApplication):
         self.nxm_listener.download_signal.connect(
             lambda url: self.log.info(f"Handled NXM link: {url}")
         )
+        
+        # Paths to the executables
+        bsarch_path = r'D:\Modelisation_IA\SSE-Auto-Translator\src\data\audio_tools\BSArch.exe'  # Update this path to where BSArch.exe is located
+        bmlfuzdecode_path = r'D:\Modelisation_IA\SSE-Auto-Translator\src\data\audio_tools\BmlFuzDecode.exe'  # Update this path to where BmlFuzDecode.exe is located
+        xwmaencode_path = r'D:\Modelisation_IA\SSE-Auto-Translator\src\data\audio_tools\xWMAEncode.exe'  # Update this path to where xWMAEncode.exe is located
+        xtts_url = self.user_config.get('xtts_api')
+        print(f"Here is a user_config you are working with {xtts_url}")
+
+        # Initialize the AudioTranslationEditor and make it accessible
+        self.audio_translation_editor = AudioTranslationEditor(bsarch_path, bmlfuzdecode_path, xwmaencode_path,xtts_url)
 
         self.root.showMaximized()
 
@@ -886,6 +896,7 @@ def main():
     global extractor
     global StartupDialog
     global TranslationEditor
+    global AudioTranslationEditor
 
     import translator_api
     import updater
@@ -899,5 +910,6 @@ def main():
     from string_extractor import extractor
     from translation_editor import TranslationEditor
     from translation_provider import Provider
+    from translation_audio import AudioTranslationEditor
 
     MainApp().exec()

@@ -46,7 +46,7 @@ class MainPageWidget(qtw.QWidget):
         self.app = app
         self.loc = app.loc
         self.mloc = app.loc.main_page
-
+               
         vlayout = qtw.QVBoxLayout()
         self.setLayout(vlayout)
 
@@ -580,7 +580,33 @@ class MainPageWidget(qtw.QWidget):
                 messagebox.setText(self.loc.database.translation_imported)
                 utils.apply_dark_title_bar(messagebox)
                 messagebox.exec()
+                
+            def edit_translation_audio(): 
+                if not plugin_selected and not mod_selected:
+                    return
 
+                if plugin_selected:
+                    translation = self.app.database.get_translation_by_plugin_name(
+                        selected_plugin.name
+                    )
+                    path_without_extension, _ = os.path.splitext(selected_plugin.path)
+                    audio_mod_path = os.path.dirname(path_without_extension)
+                else:
+                    translation = self.app.database.get_translation_by_mod(selected_mod)
+                    audio_mod_path = selected_mod.path
+
+                if translation:
+                    print(f"Here is a select plugins you are working with {audio_mod_path}")
+                    print(f"Here is a user_config you are working with {self.app.user_config.get('xtts_api')}")
+                    audio_extracted_folder = self.app.audio_translation_editor.extract_bsa(audio_mod_path)
+                    if audio_extracted_folder:
+                        convert_audio_file_return = self.app.audio_translation_editor.convert_audio_files(audio_extracted_folder)
+                        if convert_audio_file_return:
+                            self.app.translation_editor.open_translation(translation)
+                            self.app.tab_widget.setCurrentIndex(1)
+                    else :
+                        return None
+                        
             def edit_translation():
                 if not plugin_selected and not mod_selected:
                     return
@@ -592,9 +618,9 @@ class MainPageWidget(qtw.QWidget):
                 else:
                     translation = self.app.database.get_translation_by_mod(selected_mod)
 
-                if translation:
+                if translation: 
                     self.app.translation_editor.open_translation(translation)
-                    self.app.tab_widget.setCurrentIndex(1)
+                    self.app.tab_widget.setCurrentIndex(1)                   
 
             menu = qtw.QMenu()
 
@@ -659,7 +685,16 @@ class MainPageWidget(qtw.QWidget):
                     qta.icon("mdi6.text-box-edit", color="#ffffff")
                 )
                 edit_translation_action.triggered.connect(edit_translation)
-
+                
+                #edit Audio xTTS
+                edit_translation_audio_action = menu.addAction(self.mloc.edit_audio_translation)
+                edit_translation_audio_action.setIcon(
+                    qta.icon("mdi6.text-box-edit", color="#ffffff")
+                )
+                if not self.app.audio_translation_editor.is_initialized:
+                    edit_translation_audio_action.setDisabled(True)
+                edit_translation_audio_action.triggered.connect(edit_translation_audio)
+                
             elif plugin_selected:
                 menu.addSeparator()
 
